@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Dashboard - #MECS</title>
+    <style>
+        /* 1. MECS BRAND PALETTE (Consistent with Login) */
+        :root {
+            --mecs-bg: #050505;
+            --mecs-card: #0a0a0a;
+            --mecs-accent: #ff003c;     /* Neon Red/Pink */
+            --mecs-success: #00ff41;    /* Matrix Green for "Real" access */
+            --mecs-warning: #ffbf00;    /* Amber for alerts */
+            --mecs-grid: #1a1a1a;
+            --mecs-text-main: #ffffff;
+            --mecs-text-muted: #888888;
+            --mecs-border: #333333;
+        }
+
+        /* 2. GLOBAL STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--mecs-bg);
+            color: var(--mecs-text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            /* Grid Background */
+            background-image: 
+                linear-gradient(var(--mecs-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--mecs-grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 3. HEADER SECTION */
+        header {
+            border-bottom: 2px solid var(--mecs-accent);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .user-badge {
+            font-size: 0.9rem;
+            color: var(--mecs-text-muted);
+        }
+
+        .access-tag {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: var(--mecs-border);
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        /* Dynamic styling for Access Mode */
+        .access-real { color: var(--mecs-bg); background-color: var(--mecs-success); }
+        .access-guest { color: var(--mecs-bg); background-color: var(--mecs-warning); }
+
+        /* 4. FILE SYSTEM (LIST) */
+        .panel {
+            background-color: var(--mecs-card);
+            border: 1px solid var(--mecs-border);
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .panel-header {
+            background-color: #111;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--mecs-border);
+            font-size: 0.85rem;
+            color: var(--mecs-text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 1rem;
+        }
+
+        .file-list li {
+            padding: 0.5rem;
+            border-bottom: 1px solid #1a1a1a;
+            transition: background 0.2s;
+        }
+
+        .file-list li:hover {
+            background-color: #151515;
+            border-left: 3px solid var(--mecs-accent);
+        }
+
+        .file-list a {
+            color: var(--mecs-success); /* Green text like a successful command */
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+
+        .file-list a::before {
+            content: "./";
+            color: var(--mecs-text-muted);
+            margin-right: 5px;
+        }
+
+        /* 5. FILE VIEWER (PRE TAG) */
+        .file-content-area {
+            background-color: #0d0d0d;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .file-box {
+            color: #d4d4d4;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        /* 6. ADMIN & ACTION BUTTONS */
+        .actions-bar {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid var(--mecs-accent);
+            color: var(--mecs-accent);
+            transition: all 0.3s;
+            background: transparent;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: var(--mecs-accent);
+            color: var(--mecs-bg);
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
+        }
+
+        .btn-logout {
+            border-color: var(--mecs-text-muted);
+            color: var(--mecs-text-muted);
+            margin-left: auto; /* Push to right */
+        }
+
+        .btn-logout:hover {
+            background: var(--mecs-text-muted);
+            color: #000;
+            box-shadow: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <header>
+            <div>
+                <h2>Dashboard_v2.0</h2>
+                <div class="user-badge">User: <span style="color:white">{{ username }}</span></div>
+            </div>
+            <div>
+                STATUS: 
+                {% if access_type == "REAL" %}
+                    <span class="access-tag access-real">ROOT/ADMIN</span>
+                {% else %}
+                    <span class="access-tag access-guest">GUEST/RESTRICTED</span>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span>root@mecs:~/files$ ls -la</span>
+                <span>items: {{ files|length }}</span>
+            </div>
+            <ul class="file-list">
+                {% for file in files %}
+                    <li><a href="/open/{{ file }}">{{ file }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if opened_file %}
+        <div class="panel">
+            <div class="panel-header">
+                <span>vim {{ opened_file }}</span>
+                <span>[READ ONLY]</span>
+            </div>
+            <div class="file-content-area">
+                <pre class="file-box">{{ file_content }}</pre>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="actions-bar">
+            {% if access_type == "REAL" %}
+                <a href="/admin/logs" class="btn">>_ View Security Logs</a>
+            {% endif %}
+            
+            <a href="/logout" class="btn btn-logout">Logout</a>
+        </div>
+
+    </div>
+</body>
+</html>

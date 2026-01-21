@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - #MECS</title>
+    <style>
+        /* 1. MECS BRAND PALETTE */
+        :root {
+            --mecs-bg: #050505;         /* Deep Black background */
+            --mecs-card: #0a0a0a;       /* Slightly lighter terminal black */
+            --mecs-accent: #ff003c;     /* Neon Red/Pink from "CYBERSAFE" */
+            --mecs-grid: #1a1a1a;       /* Dark grid lines */
+            --mecs-text-main: #ffffff;  /* Pure white text */
+            --mecs-text-muted: #888888; /* Grey for placeholders */
+            --mecs-input-bg: #141414;   /* Very dark grey for inputs */
+            --mecs-border: #333333;     /* Subtle borders */
+        }
+
+        /* 2. GLOBAL STYLES & GRID BACKGROUND */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace; /* Monospace fits the terminal theme */
+        }
+
+        body {
+            background-color: var(--mecs-bg);
+            color: var(--mecs-text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Creating the grid effect seen in the screenshot */
+            background-image: 
+                linear-gradient(var(--mecs-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--mecs-grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* 3. TERMINAL-STYLE LOGIN CARD */
+        .container {
+            background-color: var(--mecs-card);
+            padding: 3rem;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--mecs-border);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        /* The little "traffic light" dots on top of the terminal window */
+        .container::before {
+            content: "● ● ●";
+            color: #555; /* Dimmed dots */
+            font-size: 14px;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            letter-spacing: 4px;
+        }
+
+        /* Optional: Colored dots to match the screenshot exactly */
+        /* You could use spans if you wanted exact red/yellow/green colors, but CSS content is cleaner */
+
+        h2 {
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Keep headers readable */
+            font-weight: 800;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Highlight specific part of header to match "CYBERSAFE" style */
+        h2 span {
+            color: var(--mecs-accent);
+        }
+
+        /* 4. FORM ELEMENTS */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        label {
+            display: none; /* Hiding labels for a cleaner look, relying on placeholders */
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--mecs-input-bg);
+            border: 1px solid var(--mecs-border);
+            color: var(--mecs-text-main);
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: var(--mecs-text-muted);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--mecs-accent); /* Neon red border on focus */
+            box-shadow: 0 0 10px rgba(255, 0, 60, 0.2); /* Red glow */
+        }
+
+        /* 5. "START LEARNING" STYLE BUTTON */
+        button {
+            padding: 1rem;
+            background-color: var(--mecs-accent);
+            color: black; /* Black text on neon red bg */
+            border: none;
+            font-size: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s ease;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Adding the ">_" icon style from the screenshot buttons */
+        button::before {
+            content: ">_"; 
+            font-weight: 900;
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px;
+                padding: 2rem;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Secure <span>Login</span></h2>
+        
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Request Access</button>
+        </form>
+    </div>
+
+</body>
+</html>

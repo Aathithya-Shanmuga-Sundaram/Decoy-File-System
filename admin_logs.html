@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Logs - #MECS</title>
+    <style>
+        /* 1. MECS BRAND PALETTE */
+        :root {
+            --mecs-bg: #050505;
+            --mecs-card: #0a0a0a;
+            --mecs-accent: #ff003c;     /* Neon Red/Pink */
+            --mecs-dim: #444444;        /* Dimmed borders */
+            --mecs-text-main: #e0e0e0;
+            --mecs-code: #00ff41;       /* Matrix Green for data */
+            --mecs-grid: #1a1a1a;
+        }
+
+        /* 2. GLOBAL SETTINGS */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace; /* Strict Monospace */
+        }
+
+        body {
+            background-color: var(--mecs-bg);
+            color: var(--mecs-text-main);
+            padding: 2rem;
+            min-height: 100vh;
+            /* Grid Background */
+            background-image: 
+                linear-gradient(var(--mecs-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--mecs-grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .container {
+            max-width: 1200px; /* Wider container for logs */
+            margin: 0 auto;
+        }
+
+        /* 3. HEADER */
+        .log-header {
+            border-bottom: 2px solid var(--mecs-accent);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-blink {
+            color: var(--mecs-accent);
+            font-size: 0.8rem;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* 4. DATA TABLE STYLING */
+        .table-wrapper {
+            background-color: var(--mecs-card);
+            border: 1px solid var(--mecs-dim);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            overflow-x: auto; /* Handles long hashes gracefully */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #151515;
+            color: var(--mecs-accent);
+            text-align: left;
+            padding: 1rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--mecs-accent);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--mecs-dim);
+            color: #ccc;
+        }
+
+        /* Hover effect simulates a scanner line */
+        tr:hover td {
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        /* 5. COLUMN SPECIFIC STYLING */
+        
+        /* ID Column */
+        td:nth-child(1) { color: #666; width: 50px; }
+        
+        /* Username Column */
+        td:nth-child(2) { font-weight: bold; color: white; }
+
+        /* Hash Column - Make it look like code and truncate if too long */
+        td:nth-child(3) { 
+            font-family: 'Consolas', monospace;
+            color: #888;
+            font-size: 0.85rem;
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Access Type Column */
+        td:nth-child(4) { color: var(--mecs-code); }
+
+        /* 6. BUTTONS */
+        .btn-back {
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: var(--mecs-text-main);
+            border: 1px solid var(--mecs-dim);
+            padding: 0.8rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--mecs-accent);
+            color: var(--mecs-accent);
+            background-color: rgba(255, 0, 60, 0.1);
+        }
+
+        /* Custom Scrollbar for the table */
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #000;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--mecs-accent);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="log-header">
+            <h2>>_ Security_Audit_Logs</h2>
+            <span class="status-blink">● LIVE MONITORING</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Password Hash (SHA-256)</th>
+                        <th>Access Level</th>
+                        <th>Event Action</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td>#{{ log[0] }}</td>
+                            <td>{{ log[1] }}</td>
+                            <td title="{{ log[2] }}">{{ log[2] }}</td> <td>{{ log[3] }}</td>
+                            <td>{{ log[4] }}</td>
+                            <td>{{ log[5] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/dashboard" class="btn-back">< Back to Dashboard</a>
+    </div>
+</body>
+</html>
